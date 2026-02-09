@@ -1,7 +1,7 @@
 # Development
 FROM timbru31/node-chrome:24-slim AS dev
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
-ENV PUPPETEER_SKIP_DOWNLOAD=true
+# ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
+# ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV NODE_ENV development
 WORKDIR /app
 COPY . .

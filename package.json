@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./src/app.js",
+    "dev": "node --watch ./src/app.js",
     "dev:docker": "docker compose -f docker-compose.dev.yaml up --build --watch",
     "build": "node ./build.js",
     "start": "node ./dist/app.js"
@@ -14,9 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.52.0",
     "puppeteer": "^24.37.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.11"
   }
 }
