@@ -1,8 +1,14 @@
-#!/usr/bin/env node
+import { loadEnvFile } from 'node:process'
+loadEnvFile('.env')
 
+import { env } from 'node:process'
 import puppeteer from 'puppeteer'
-import dotenv from 'dotenv'
-dotenv.config()
+
+// prettier-ignore
+if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID || !env.PUPPETEER_EXECUTABLE_PATH || !env.PUPPETEER_SKIP_DOWNLOAD) {
+  throw new Error(`Missing environment variable.`)
+}
+
 // import jsdom from 'jsdom'
 // const dom = new jsdom.JSDOM(`<!DOCTYPE html><p>Hello world</p>`)
 // const text = dom.window.document.querySelector('p').textContent
@@ -12,7 +18,11 @@ let alertTimeStart // Date.now() // Get time of alert in unix timestamp format
 
 async function run() {
   // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch({ headless: 'new' })
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    executablePath: env.PUPPETEER_EXECUTABLE_PATH,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  })
   const page = await browser.newPage()
 
   // Navigate the page to a URL
@@ -33,8 +43,8 @@ async function run() {
   })
 
   // Send HTTP GET request to Telegram bot API
-  const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN
-  const telegramChatId = process.env.TELEGRAM_CHAT_ID
+  const telegramBotToken = env.TELEGRAM_BOT_TOKEN
+  const telegramChatId = env.TELEGRAM_CHAT_ID
 
   // await new Promise((resolve) => setTimeout(() => resolve(), 1000)) //test time
 
@@ -43,7 +53,7 @@ async function run() {
     alertTimeStart = Date.now()
 
     await fetch(
-      `https://api.telegram.org/${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${telegramMessageAlertOn}`
+      `https://api.telegram.org/${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${telegramMessageAlertOn}`,
     )
     onAlert = true
   }
@@ -54,7 +64,7 @@ async function run() {
     const telegramMessageAlertOff = `🟢 Кінець тривоги.\nТривалість: ${alertDuration}`
 
     await fetch(
-      `https://api.telegram.org/${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${telegramMessageAlertOff}`
+      `https://api.telegram.org/${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${telegramMessageAlertOff}`,
     )
     onAlert = false
   }

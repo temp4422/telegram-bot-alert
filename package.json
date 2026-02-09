@@ -5,13 +5,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon ./src/app.js",
+    "dev:docker": "docker compose -f docker-compose.dev.yaml up --build --watch",
+    "build": "node ./build.js",
+    "start": "node ./dist/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^17.2.3",
-    "puppeteer": "^24.32.1"
+    "puppeteer": "^24.37.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }

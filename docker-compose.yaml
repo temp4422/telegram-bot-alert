@@ -1,0 +1,13 @@
+name: telegram-bot-alert
+
+services:
+  app:
+    build:
+      context: .
+      target: prod
+    restart: on-failure:10
+    container_name: telegram-bot-alert
+    # ports:
+      # - 3001:3000
+    # environment:
+      # - DOTENV_PRIVATE_KEY_PRODUCTION=${DOTENV_PRIVATE_KEY_PRODUCTION}

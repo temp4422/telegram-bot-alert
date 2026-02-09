@@ -1,0 +1,27 @@
+name: GitHub Actions Pull from VPS on Push to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  vps-pull:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        env:
+          DOTENV_PRIVATE_KEY_PRODUCTION: ${{ secrets.DOTENV_PRIVATE_KEY_PRODUCTION }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          port: 22
+          envs: DOTENV_PRIVATE_KEY_PRODUCTION
+          script: |
+            cd ~/telegram-bot-alert
+            git config pull.rebase true
+            git pull origin main
+            docker compose up -d --build
+            docker image prune --force

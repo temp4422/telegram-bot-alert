@@ -1,0 +1,34 @@
+name: telegram-bot-alert
+
+services:
+  app:
+    # build: . # Build the application from the current directory Dockerfile
+    build:
+      # secrets:
+      # - DOTENV_PRIVATE_KEY_PRODUCTION
+      context: .
+      target: dev
+      # dockerfile: Dockerfile
+    restart: 'no'
+    container_name: telegram-bot-alert
+    # ports:
+      # - 3000:3000
+    # env_file: ./.env
+    # environment: # This env vars is local to container only, it is not set in host machine
+      # - DOTENV_PRIVATE_KEY_PRODUCTION=${DOTENV_PRIVATE_KEY_PRODUCTION} # Set in gihub-actions, but it's not safe
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+
+# secrets:
+# DOTENV_PRIVATE_KEY_PRODUCTION:
+# environment: DOTENV_PRIVATE_KEY_PRODUCTION
+
+# Currently secrets are not working so we use environment instead.
+# But it is not safe to set private key in environment variable,
+# we need to find a way to use secrets in docker compose.
+
+# To use secrets in docker compose, we can use the following command:
+# DOTENV_PRIVATE_KEY_PRODUCTION=.... npm run docker:dev
