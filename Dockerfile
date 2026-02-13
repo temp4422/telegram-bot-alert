@@ -11,6 +11,7 @@ WORKDIR /app
 COPY package*.json .
 # Now npm install runs only when dependencies change.
 RUN npm install
+# Check alternative RUN --mount=type=cache,target=/root/.npm npm install
 COPY . .
 RUN npm run build
 CMD ["npm", "run", "dev"]

@@ -89,3 +89,15 @@ function msToTime(milliseconds) {
   // h < 10 ? (h = `0${h}`) : (h = `${h}`)
   return `${h}h:${m}m:${s}s`
 }
+
+// // Graceful shutdown
+//   process.on('SIGINT', () => {
+//     // mongoDbClient.close()
+//     // bot.stop('SIGINT')
+//     process.exit(0)
+//   })
+//   process.on('SIGTERM', () => {
+//     // mongoDbClient.close()
+//     // bot.stop('SIGTERM')
+//     process.exit(0)
+//   })
