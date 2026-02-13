@@ -1,14 +1,16 @@
 {
   "type": "module",
   "name": "puppeteer",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.1",
+  "description": "telegram bot that uses puppeteer to scrape data from website and send alert to telegram",
   "main": "index.js",
   "scripts": {
     "dev": "dotenvx run -f .env.production -- node --watch ./src/app.js",
     "dev:docker": "docker compose -f docker-compose.dev.yaml up --build --watch",
+    "prebuild": "rm -rf ./dist/ && mkdir ./dist/",
     "build": "node ./build.js",
-    "start": "dotenvx run -f .env.production -- node ./dist/app.js"
+    "start": "dotenvx run -f .env.production -- node ./dist/app.js",
+    "start:docker": "docker compose up -d --build"
   },
   "keywords": [],
   "author": "",
