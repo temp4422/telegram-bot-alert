@@ -4,8 +4,14 @@ FROM timbru31/node-chrome:24-slim AS dev
 # ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV NODE_ENV development
 WORKDIR /app
-COPY . .
+# Docker cache logic:
+# Layer cache is invalidated only if files used in that layer change.
+# Any source change → cache invalidated → npm install runs again.
+# Copy package*.json first, run npm install, then copy the rest of the files so Docker caches dependencies unless they change.
+COPY package*.json .
+# Now npm install runs only when dependencies change.
 RUN npm install
+COPY . .
 RUN npm run build
 CMD ["npm", "run", "dev"]
 # CMD ["node", "./dist/app.js"]
@@ -30,5 +36,3 @@ COPY --from=build app/package*.json .
 COPY --from=build app/dist dist/
 COPY --from=build app/.env.production .
 CMD ["npm", "run", "start"]
-
-
