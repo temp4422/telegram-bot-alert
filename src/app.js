@@ -1,5 +1,8 @@
 import { loadEnvFile } from 'node:process'
-loadEnvFile('.env')
+import { existsSync } from 'node:fs'
+
+loadEnvFile(existsSync('.env') ? '.env' : '.env.production')
+// loadEnvFile('.env')
 
 import { env } from 'node:process'
 import puppeteer from 'puppeteer'

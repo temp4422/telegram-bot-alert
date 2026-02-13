@@ -12,10 +12,10 @@ services:
     restart: 'no'
     container_name: telegram-bot-alert
     # ports:
-      # - 3000:3000
+    # - 3000:3000
     # env_file: ./.env
-    # environment: # This env vars is local to container only, it is not set in host machine
-      # - DOTENV_PRIVATE_KEY_PRODUCTION=${DOTENV_PRIVATE_KEY_PRODUCTION} # Set in gihub-actions, but it's not safe
+    environment: # This env vars is local to container only, it is not set in host machine
+      - DOTENV_PRIVATE_KEY_PRODUCTION=${DOTENV_PRIVATE_KEY_PRODUCTION} # Set in gihub-actions, but it's not safe
     develop:
       watch:
         - action: sync

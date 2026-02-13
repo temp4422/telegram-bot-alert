@@ -5,10 +5,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch ./src/app.js",
+    "dev": "dotenvx run -f .env.production -- node --watch ./src/app.js",
     "dev:docker": "docker compose -f docker-compose.dev.yaml up --build --watch",
     "build": "node ./build.js",
-    "start": "node ./dist/app.js"
+    "start": "dotenvx run -f .env.production -- node ./dist/app.js"
   },
   "keywords": [],
   "author": "",
