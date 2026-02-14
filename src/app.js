@@ -1,17 +1,13 @@
-import { loadEnvFile } from 'node:process'
+import { loadEnvFile, env } from 'node:process'
 import { existsSync } from 'node:fs'
+import puppeteer from 'puppeteer'
 
 loadEnvFile(existsSync('.env') ? '.env' : '.env.production')
-// loadEnvFile('.env')
-
-import { env } from 'node:process'
-import puppeteer from 'puppeteer'
 
 // prettier-ignore
 if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID || !env.PUPPETEER_EXECUTABLE_PATH || !env.PUPPETEER_SKIP_DOWNLOAD) {
   throw new Error(`Missing environment variable.`)
 }
-
 // import jsdom from 'jsdom'
 // const dom = new jsdom.JSDOM(`<!DOCTYPE html><p>Hello world</p>`)
 // const text = dom.window.document.querySelector('p').textContent

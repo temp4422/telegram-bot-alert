@@ -2,7 +2,7 @@
 FROM timbru31/node-chrome:24-slim AS dev
 # ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 # ENV PUPPETEER_SKIP_DOWNLOAD=true
-ENV NODE_ENV development
+# ENV NODE_ENV development
 WORKDIR /app
 # Docker cache logic:
 # Layer cache is invalidated only if files used in that layer change.
@@ -30,7 +30,7 @@ RUN npm prune --production
 
 # Production
 FROM timbru31/node-chrome:24-slim AS prod
-ENV NODE_ENV production
+# ENV NODE_ENV production
 WORKDIR /app
 COPY --from=build app/node_modules/ node_modules/
 COPY --from=build app/package*.json .

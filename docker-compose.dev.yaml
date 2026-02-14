@@ -5,7 +5,7 @@ services:
     # build: . # Build the application from the current directory Dockerfile
     build:
       # secrets:
-      # - DOTENV_PRIVATE_KEY_PRODUCTION
+      # DOTENV_PRIVATE_KEY_PRODUCTION
       context: .
       target: dev
       # dockerfile: Dockerfile
@@ -15,7 +15,8 @@ services:
     # - 3000:3000
     # env_file: ./.env
     environment: # This env vars is local to container only, it is not set in host machine
-      - DOTENV_PRIVATE_KEY_PRODUCTION=${DOTENV_PRIVATE_KEY_PRODUCTION} # Set in gihub-actions, but it's not safe
+      NODE_ENV: development
+      DOTENV_PRIVATE_KEY_PRODUCTION: ${DOTENV_PRIVATE_KEY_PRODUCTION} # Set in gihub-actions, but it's not safe
     develop:
       watch:
         - action: sync

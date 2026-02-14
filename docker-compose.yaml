@@ -8,4 +8,5 @@ services:
     restart: on-failure:10
     container_name: telegram-bot-alert
     environment:
-      - DOTENV_PRIVATE_KEY_PRODUCTION=${DOTENV_PRIVATE_KEY_PRODUCTION}
+      NODE_ENV: production
+      DOTENV_PRIVATE_KEY_PRODUCTION: ${DOTENV_PRIVATE_KEY_PRODUCTION}
