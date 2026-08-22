@@ -23,7 +23,7 @@
     "start:docker": "docker compose up -d --build"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "^1.52.0",
-    "puppeteer": "^24.37.2"
+    "@dotenvx/dotenvx": "^2.21.0",
+    "puppeteer": "^25.8.0"
   }
 }
