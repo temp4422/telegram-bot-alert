@@ -25,7 +25,8 @@ async function run() {
   const page = await browser.newPage()
 
   // Navigate the page to a URL
-  await page.goto('https://alerts.in.ua')
+  const response = await page.goto('https://alerts.in.ua')
+  if (!response?.ok()) throw new Error('Page not loaded.')
 
   // Wait for element to be loaded
   await page.waitForSelector('#super-lite-map > g.oblasts > path:nth-child(22)') // Not sure if it works properly
@@ -72,9 +73,9 @@ async function run() {
 }
 
 // Run every 30 sec
-setInterval(() => {
-  run()
-}, 30000)
+// setInterval(() => {
+run()
+// }, 30000)
 
 function msToTime(milliseconds) {
   let h = Math.floor(milliseconds / 1000 / 60 / 60)
