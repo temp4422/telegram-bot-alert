@@ -3,7 +3,7 @@
   "name": "puppeteer",
   "version": "2.0.1",
   "description": "telegram bot that uses puppeteer to scrape data from website and send alert to telegram",
-  "main": "index.js",
+  "main": "./dist/app.js",
   "scripts": {
     "dev": "dotenvx run -f .env.production -- node --watch ./src/app.js",
     "dev:docker": "docker compose -f docker-compose.dev.yaml up --build --watch",
