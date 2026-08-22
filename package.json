@@ -4,6 +4,16 @@
   "description": "telegram bot that uses puppeteer to scrape data from website and send alert to telegram",
   "type": "module",
   "main": "./dist/app.js",
+  "author": "temp4422",
+  "license": "ISC",
+  "keywords": [
+    "telegram",
+    "bot"
+  ],
+  "engines": {
+    "node": "^24",
+    "npm": "^11"
+  },
   "scripts": {
     "dev": "dotenvx run -f .env.production -- node --watch ./src/app.js",
     "dev:docker": "docker compose -f docker-compose.dev.yaml up --build",
@@ -12,9 +22,6 @@
     "start": "dotenvx run -f .env.production -- node ./dist/app.js",
     "start:docker": "docker compose up -d --build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@dotenvx/dotenvx": "^1.52.0",
     "puppeteer": "^24.37.2"
