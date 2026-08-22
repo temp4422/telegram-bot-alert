@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs'
 import puppeteer from 'puppeteer'
 
 loadEnvFile(existsSync('.env') ? '.env' : '.env.production')
-console.log('OK')
+
 // prettier-ignore
 if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID || !env.PUPPETEER_EXECUTABLE_PATH || !env.PUPPETEER_SKIP_DOWNLOAD) {
   throw new Error(`Missing environment variable.`)

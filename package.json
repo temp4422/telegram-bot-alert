@@ -1,8 +1,8 @@
 {
-  "type": "module",
-  "name": "puppeteer",
-  "version": "2.0.1",
+  "name": "telegram-bot-alert",
+  "version": "3.0.0",
   "description": "telegram bot that uses puppeteer to scrape data from website and send alert to telegram",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "dotenvx run -f .env.production -- node --watch ./src/app.js",
