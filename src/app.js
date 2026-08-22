@@ -18,7 +18,7 @@ let alertTimeStart // Date.now() // Get time of alert in unix timestamp format
 async function run() {
   // Launch the browser and open a new blank page
   const browser = await puppeteer.launch({
-    headless: 'new',
+    headless: true,
     executablePath: env.PUPPETEER_EXECUTABLE_PATH,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   })
@@ -28,25 +28,27 @@ async function run() {
   const response = await page.goto('https://alerts.in.ua')
   if (!response?.ok()) throw new Error('Page not loaded.')
 
-  // Wait for element to be loaded
-  await page.waitForSelector('#super-lite-map > g.oblasts > path:nth-child(22)') // Not sure if it works properly
-  await new Promise((r) => setTimeout(r, 1000)) // Adding timeout fix 'alertId' return 'null' sometimes
+  // // Wait for element to be loaded
+  // await page.waitForSelector('#super-lite-map > g.oblasts > path:nth-child(22)') // Not sure if it works properly
+  // await new Promise((r) => setTimeout(r, 1000)) // Adding timeout fix 'alertId' return 'null' sometimes
+  // const alertId = await page.evaluate(() => {
+  //   // Browser context
+  //   // Info: after many tries, I found that svg 'path' is not general html element, but it is related to ATTRIBUTE, this why, when logging html elements or nodes of html partent element of 'path' it show nothing -> 'HTMLUnknownElement'. Thus access data attributes with 'attributes' method
+  //   // document.querySelector('#super-lite-map > g.oblasts > path:nth-child(22)').innerHTML // return empty, there are no html, only attributes
+  //   let dataAlertId = null
+  //   const svgPath = document.querySelector('#super-lite-map > g.oblasts > path:nth-child(22)')
+  //   if (svgPath.attributes['data-alert-id']) dataAlertId = svgPath.attributes['data-alert-id'].value
+  //   return dataAlertId // return 'data-alert-id' or 'null'
+  // })
 
-  const alertId = await page.evaluate(() => {
-    // Browser context
-    // Info: after many tries, I found that svg 'path' is not general html element, but it is related to ATTRIBUTE, this why, when logging html elements or nodes of html partent element of 'path' it show nothing -> 'HTMLUnknownElement'. Thus access data attributes with 'attributes' method
-    // document.querySelector('#super-lite-map > g.oblasts > path:nth-child(22)').innerHTML // return empty, there are no html, only attributes
-    let dataAlertId = null
-    const svgPath = document.querySelector('#super-lite-map > g.oblasts > path:nth-child(22)')
-    if (svgPath.attributes['data-alert-id']) dataAlertId = svgPath.attributes['data-alert-id'].value
-    return dataAlertId // return 'data-alert-id' or 'null'
-  })
+  // Check svg attribute
+  const alertId = await page.$eval('#super-lite-map > g.oblasts > path:nth-child(22)', (element) =>
+    element.getAttribute('data-alert-id'),
+  )
 
   // Send HTTP GET request to Telegram bot API
   const telegramBotToken = env.TELEGRAM_BOT_TOKEN
   const telegramChatId = env.TELEGRAM_CHAT_ID
-
-  // await new Promise((resolve) => setTimeout(() => resolve(), 1000)) //test time
 
   if (alertId && !onAlert) {
     const telegramMessageAlertOn = `🔴 Повітряна тривога у Закарпатській області.`
@@ -73,17 +75,15 @@ async function run() {
 }
 
 // Run every 30 sec
-// setInterval(() => {
-run()
-// }, 30000)
+setInterval(() => {
+  run()
+}, 30000)
 
 function msToTime(milliseconds) {
-  let h = Math.floor(milliseconds / 1000 / 60 / 60)
-  let m = Math.floor((milliseconds / 1000 / 60 / 60 - h) * 60)
-  let s = Math.floor(((milliseconds / 1000 / 60 / 60 - h) * 60 - m) * 60)
-  // s < 10 ? (s = `0${s}`) : (s = `${s}`)
-  // m < 10 ? (m = `0${m}`) : (m = `${m}`)
-  // h < 10 ? (h = `0${h}`) : (h = `${h}`)
+  let seconds = Math.floor(milliseconds / 1000)
+  let h = Math.floor(seconds / 3600)
+  let m = Math.floor((seconds % 3600) / 60)
+  let s = seconds % 60
   return `${h}h:${m}m:${s}s`
 }
 
