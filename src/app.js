@@ -29,7 +29,7 @@ async function run() {
   await new Promise((r) => setTimeout(r, 1000))
 
   // Check svg attribute
-  isAlertActive = await page.$eval('#super-lite-map > g.oblasts > path:nth-child(3)', (element) =>
+  isAlertActive = await page.$eval('#super-lite-map > g.oblasts > path:nth-child(25)', (element) =>
     element.getAttribute('class').includes('active'),
   )
 
@@ -38,7 +38,7 @@ async function run() {
   const telegramChatId = env.TELEGRAM_CHAT_ID
 
   if (isAlertActive && !wasAlertActive) {
-    const telegramMessageAlertOn = `🔴 Повітряна тривога у Закарпатській області. КИЇВСЬКА ОБЛ`
+    const telegramMessageAlertOn = `🔴 Повітряна тривога у Закарпатській області.`
     alertTimeStart = Date.now()
 
     await fetch(
