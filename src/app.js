@@ -29,7 +29,8 @@ async function run() {
   await new Promise((r) => setTimeout(r, 1000))
 
   // Check svg attribute
-  isAlertActive = await page.$eval('#super-lite-map > g.oblasts > path:nth-child(25)', (element) =>
+  // path:nth-child(22) - Закарпаття, path:nth-child(3) - Київ
+  isAlertActive = await page.$eval('#super-lite-map > g.oblasts > path:nth-child(3)', (element) =>
     element.getAttribute('class').includes('active'),
   )
 
