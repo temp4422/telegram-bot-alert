@@ -23,5 +23,5 @@ jobs:
             cd ~/telegram-bot-alert
             git config pull.rebase true
             git pull origin main
-            docker compose up -d --build
+            docker compose up --detach --build
             docker image prune --force
