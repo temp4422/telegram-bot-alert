@@ -1,5 +1,6 @@
 # Development
-FROM timbru31/node-chrome:24-slim AS dev
+# To guarantee exact same image, pull its immutable SHA256 digest.
+FROM timbru31/node-chrome:24-slim@sha256:37af0ee88b22ac0698d2af58089b1c6df5100f9fa402ac11e38b6581f155145a AS dev
 # ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 # ENV PUPPETEER_SKIP_DOWNLOAD=true
 # ENV NODE_ENV development
@@ -21,7 +22,7 @@ CMD ["npm", "run", "dev"]
 
 
 # Build for production stage
-FROM timbru31/node-chrome:24-slim AS build
+FROM timbru31/node-chrome:24-slim@sha256:37af0ee88b22ac0698d2af58089b1c6df5100f9fa402ac11e38b6581f155145a AS build
 WORKDIR /app
 COPY . .
 RUN npm ci
@@ -29,7 +30,7 @@ RUN npm run build
 RUN npm prune --production
 
 # Production
-FROM timbru31/node-chrome:24-slim AS prod
+FROM timbru31/node-chrome:24-slim@sha256:37af0ee88b22ac0698d2af58089b1c6df5100f9fa402ac11e38b6581f155145a AS prod
 # ENV NODE_ENV production
 WORKDIR /app
 COPY --from=build app/node_modules/ node_modules/
