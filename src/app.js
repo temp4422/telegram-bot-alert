@@ -80,22 +80,6 @@ function msToTime(milliseconds) {
   return `${h}h:${m}m:${s}s`
 }
 
-// // Graceful shutdown
-//   process.on('SIGINT', () => {
-//     // mongoDbClient.close()
-//     // bot.stop('SIGINT')
-//     process.exit(0)
-//   })
-//   process.on('SIGTERM', () => {
-//     // mongoDbClient.close()
-//     // bot.stop('SIGTERM')
-//     process.exit(0)
-//   })
-
-// // Wait for element to be loaded
-// await page.waitForSelector('#super-lite-map > g.oblasts > path:nth-child(22)') // Not sure if it works properly
-// const isAlertActive = await page.evaluate(() => {
-//   // Browser context
 //   // Info: after many tries, I found that svg 'path' is not general html element, but it is related to ATTRIBUTE, this why, when logging html elements or nodes of html partent element of 'path' it show nothing -> 'HTMLUnknownElement'. Thus access data attributes with 'attributes' method
 //   // document.querySelector('#super-lite-map > g.oblasts > path:nth-child(22)').innerHTML // return empty, there are no html, only attributes
 //   let dataAlertId = null
