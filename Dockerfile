@@ -25,7 +25,7 @@ CMD ["npm", "run", "dev"]
 FROM timbru31/node-chrome:24-slim@sha256:37af0ee88b22ac0698d2af58089b1c6df5100f9fa402ac11e38b6581f155145a AS build
 WORKDIR /app
 COPY . .
-RUN npm ci
+RUN npm install
 RUN npm run build
 RUN npm prune --production
 
