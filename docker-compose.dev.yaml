@@ -16,9 +16,9 @@ services:
     # env_file: ./.env
     environment: # This env vars is local to container only, it is not set in host machine
       NODE_ENV: development
-      DOTENV_PRIVATE_KEY_PRODUCTION: ${DOTENV_PRIVATE_KEY_PRODUCTION} # Set in gihub-actions, but it's not safe
+      # DOTENV_PRIVATE_KEY_PRODUCTION: ${DOTENV_PRIVATE_KEY_PRODUCTION} # Set in gihub-actions, but it's not safe
     volumes:
-        - ./src:/app/src
+      - ./src:/app/src
     # develop:
     #   watch:
     #     - action: sync

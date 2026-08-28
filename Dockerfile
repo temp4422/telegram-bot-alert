@@ -15,7 +15,9 @@ RUN npm install
 # Check alternative RUN --mount=type=cache,target=/root/.npm npm install
 COPY . .
 RUN npm run build
-CMD ["npm", "run", "dev"]
+# CMD ["npm", "run", "dev"]
+# To prevent npm error command failed && pm error signal SIGTERM
+CMD ["./node_modules/.bin/dotenvx", "run", "-f", ".env.production", "--", "node", "--watch", "./src/app.js"]
 # CMD ["node", "./dist/app.js"]
 # CMD ["/usr/local/bin/node", "/app/dist/app.js"]
 

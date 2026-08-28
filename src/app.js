@@ -87,3 +87,5 @@ function msToTime(milliseconds) {
 //   if (svgPath.attributes['data-alert-id']) dataAlertId = svgPath.attributes['data-alert-id'].value
 //   return dataAlertId // return 'data-alert-id' or 'null'
 // })
+
+//ok
