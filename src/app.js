@@ -14,27 +14,31 @@ let isAlertActive = false
 let alertTimeStart // Date.now() // Get time of alert in unix timestamp format
 
 async function run() {
-  // Launch the browser, open page, go to URL
+  // Launch the browser
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: env.PUPPETEER_EXECUTABLE_PATH,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   })
+
+  // Open page and go to URL
   const page = await browser.newPage()
   const response = await page.goto('https://alerts.in.ua', {
     waitUntil: 'networkidle2',
   })
   if (!response?.ok()) throw new Error('Page not loaded.')
 
+  // Add timeout fix
+  await new Promise((r) => setTimeout(r, 1000))
+
   // Check svg, use CSS attribute selector with multiple conditions
-  let selector = '[data-alert-id][data-oblast="Київська область"]'
-  await page.waitForSelector(selector, { timeout: 3000 })
+  const element = await page.$('[data-alert-id][data-oblast="Київська область"]')
+  if (element) isAlertActive = true
 
-  let element = await page.$(selector)
-  if (!element) throw new Error(`Alert element not found: ${selector}`)
-
-  isAlertActive = await element.evaluate((element) => element.classList.contains('active'))
-  console.log(isAlertActive)
+  // No wait or thorw, because we need to proceed even if element is not found
+  // isAlertActive = await element.evaluate((element) => element.classList.contains('active'))
+  // await page.waitForSelector(selector, { timeout: 1000 })
+  // if (!element) throw new Error(`Alert element not found: ${selector}`)
 
   // Send HTTP GET request to Telegram bot API
   const telegramBotToken = env.TELEGRAM_BOT_TOKEN
