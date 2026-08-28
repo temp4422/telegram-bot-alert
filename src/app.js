@@ -21,18 +21,20 @@ async function run() {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   })
   const page = await browser.newPage()
-  const response = await page.goto('https://alerts.in.ua')
+  const response = await page.goto('https://alerts.in.ua', {
+    waitUntil: 'networkidle2',
+  })
   if (!response?.ok()) throw new Error('Page not loaded.')
 
-  // Adding timeout fix 'isAlertActive' return 'null' sometimes.
-  // Probably site is not able to generate content fast enough.
-  await new Promise((r) => setTimeout(r, 1000))
+  // Check svg, use CSS attribute selector with multiple conditions
+  let selector = '[data-alert-id][data-oblast="Київська область"]'
+  await page.waitForSelector(selector, { timeout: 3000 })
 
-  // Check svg attribute
-  // path:nth-child(22) - Закарпаття, path:nth-child(3) - Київ
-  isAlertActive = await page.$eval('#super-lite-map > g.oblasts > path:nth-child(3)', (element) =>
-    element.getAttribute('class').includes('active'),
-  )
+  let element = await page.$(selector)
+  if (!element) throw new Error(`Alert element not found: ${selector}`)
+
+  isAlertActive = await element.evaluate((element) => element.classList.contains('active'))
+  console.log(isAlertActive)
 
   // Send HTTP GET request to Telegram bot API
   const telegramBotToken = env.TELEGRAM_BOT_TOKEN
