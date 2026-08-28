@@ -1,6 +1,6 @@
 import { loadEnvFile, env } from 'node:process'
 import { existsSync } from 'node:fs'
-import puppeteer from 'puppeteer'
+import puppeteer from 'puppeteer-core'
 
 loadEnvFile(existsSync('.env') ? '.env' : '.env.production')
 
@@ -12,6 +12,9 @@ if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID || !env.PUPPETEER_EXECUTABL
 let wasAlertActive = false
 let isAlertActive = false
 let alertTimeStart // Date.now() // Get time of alert in unix timestamp format
+
+// Run every 30sec
+setInterval(() => run(), 30000)
 
 async function run() {
   // Launch the browser
@@ -68,11 +71,7 @@ async function run() {
   await browser.close()
 }
 
-// Run every 30 sec
-setInterval(() => {
-  run()
-}, 30000)
-
+// Helper functions
 function msToTime(milliseconds) {
   let seconds = Math.floor(milliseconds / 1000)
   let h = Math.floor(seconds / 3600)
