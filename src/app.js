@@ -35,7 +35,7 @@ async function run() {
   await new Promise((r) => setTimeout(r, 1000))
 
   // Check svg, use CSS attribute selector with multiple conditions
-  const element = await page.$('[data-alert-id][data-oblast="Київська область"]')
+  const element = await page.$('[data-alert-id][data-oblast="Закарпатська область"]')
   if (element) isAlertActive = true
   else isAlertActive = false
 
