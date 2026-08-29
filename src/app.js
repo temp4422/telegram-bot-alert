@@ -37,6 +37,7 @@ async function run() {
   // Check svg, use CSS attribute selector with multiple conditions
   const element = await page.$('[data-alert-id][data-oblast="Київська область"]')
   if (element) isAlertActive = true
+  else isAlertActive = false
 
   // No wait or thorw, because we need to proceed even if element is not found
   // isAlertActive = await element.evaluate((element) => element.classList.contains('active'))
@@ -67,6 +68,8 @@ async function run() {
     )
     wasAlertActive = false
   }
+
+  // If (!isAlertActive && !wasAlertActive) // Do nothing
 
   await browser.close()
 }
