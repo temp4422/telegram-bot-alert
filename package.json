@@ -23,7 +23,7 @@
     "start:docker": "docker compose up --detach --build --force-recreate"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "^2.21.0",
-    "puppeteer-core": "^25.8.0"
+    "@dotenvx/dotenvx": "^2.38.2",
+    "puppeteer-core": "^25.16.0"
   }
 }

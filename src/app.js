@@ -10,68 +10,82 @@ if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID || !env.PUPPETEER_EXECUTABL
 }
 
 let wasAlertActive = false
-let isAlertActive = false
 let alertTimeStart // Date.now() // Get time of alert in unix timestamp format
 
-// Run every 30sec
-setInterval(() => run(), 30000)
+// Schedule the next check only after the current check and cleanup finish.
+setTimeout(poll, 30000)
+
+async function poll() {
+  try {
+    await run()
+  } catch (error) {
+    console.error('Alert check failed:', error)
+  } finally {
+    setTimeout(poll, 30000)
+  }
+}
 
 async function run() {
-  // Launch the browser
-  const browser = await puppeteer.launch({
-    headless: true,
-    executablePath: env.PUPPETEER_EXECUTABLE_PATH,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  })
+  let browser
+  try {
+    // Launch the browser
+    browser = await puppeteer.launch({
+      headless: true,
+      executablePath: env.PUPPETEER_EXECUTABLE_PATH,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    })
 
-  // Open page and go to URL
-  const page = await browser.newPage()
-  const response = await page.goto('https://alerts.in.ua', {
-    waitUntil: 'networkidle2',
-  })
-  if (!response?.ok()) throw new Error('Page not loaded.')
+    // Open page and go to URL
+    const page = await browser.newPage()
+    const response = await page.goto('https://alerts.in.ua', {
+      waitUntil: 'networkidle2',
+    })
+    if (!response?.ok()) throw new Error('Page not loaded.')
 
-  // Add timeout fix
-  await new Promise((r) => setTimeout(r, 1000))
+    // Add timeout fix
+    await new Promise((r) => setTimeout(r, 1000))
 
-  // Check svg, use CSS attribute selector with multiple conditions
-  const element = await page.$('[data-alert-id][data-oblast="Закарпатська область"]')
-  if (element) isAlertActive = true
-  else isAlertActive = false
-
-  // No wait or thorw, because we need to proceed even if element is not found
-  // isAlertActive = await element.evaluate((element) => element.classList.contains('active'))
-  // await page.waitForSelector(selector, { timeout: 1000 })
-  // if (!element) throw new Error(`Alert element not found: ${selector}`)
-
-  // Send HTTP GET request to Telegram bot API
-  const telegramBotToken = env.TELEGRAM_BOT_TOKEN
-  const telegramChatId = env.TELEGRAM_CHAT_ID
-
-  if (isAlertActive && !wasAlertActive) {
-    const telegramMessageAlertOn = `🔴 Повітряна тривога у Закарпатській області.`
-    alertTimeStart = Date.now()
-
-    await fetch(
-      `https://api.telegram.org/${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${telegramMessageAlertOn}`,
+    // A missing region means the check failed, not that the alert ended.
+    const region = await page.$('[data-oblast="Закарпатська область"]')
+    if (!region) throw new Error('Region not found: Закарпатська область')
+    const isAlertActive = await region.evaluate((element) =>
+      element.hasAttribute('data-alert-id'),
     )
-    wasAlertActive = true
+
+    // Send HTTP GET request to Telegram bot API
+    const telegramBotToken = env.TELEGRAM_BOT_TOKEN
+    const telegramChatId = env.TELEGRAM_CHAT_ID
+
+    if (isAlertActive && !wasAlertActive) {
+      const telegramMessageAlertOn = `🔴 Повітряна тривога у Закарпатській області.`
+      const nextAlertTimeStart = Date.now()
+
+      await fetch(
+        `https://api.telegram.org/${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${telegramMessageAlertOn}`,
+      )
+      alertTimeStart = nextAlertTimeStart
+      wasAlertActive = true
+    }
+
+    if (!isAlertActive && wasAlertActive) {
+      let alertTimeEnd = Date.now()
+      const alertDuration = msToTime(alertTimeEnd - alertTimeStart)
+      const telegramMessageAlertOff = `🟢 Кінець тривоги.\nТривалість: ${alertDuration}`
+
+      await fetch(
+        `https://api.telegram.org/${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${telegramMessageAlertOff}`,
+      )
+      wasAlertActive = false
+    }
+  } finally {
+    if (browser) {
+      try {
+        await browser.close()
+      } catch (error) {
+        console.error('Browser cleanup failed:', error)
+      }
+    }
   }
-
-  if (!isAlertActive && wasAlertActive) {
-    let alertTimeEnd = Date.now()
-    const alertDuration = msToTime(alertTimeEnd - alertTimeStart)
-    const telegramMessageAlertOff = `🟢 Кінець тривоги.\nТривалість: ${alertDuration}`
-
-    await fetch(
-      `https://api.telegram.org/${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${telegramMessageAlertOff}`,
-    )
-    wasAlertActive = false
-  }
-
-  // If (!isAlertActive && !wasAlertActive) // Do nothing
-
-  await browser.close()
 }
 
 // Helper functions
